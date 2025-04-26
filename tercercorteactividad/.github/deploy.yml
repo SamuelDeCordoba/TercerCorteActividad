@@ -1,0 +1,28 @@
+name: Deploy FastAPI App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: 191.93.245.227
+        username: ndgserver
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          rm -rf tercerCorteActividad
+          mkdir tercerCorteActividad
+          cd tercerCorteActividad
+          git clone https://github.com/tu-usuario/tu-repo.git .
+          docker-compose down
+          docker-compose up -d --build
