@@ -11,18 +11,27 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Versión actualizada
 
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v0.1.6
       with:
         host: 191.93.245.227
         username: ndgserver
-        key: ${{ secrets.SERVER_SSH_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}  # Nombre más estándar
+        port: 22
         script: |
-          rm -rf tercerCorteActividad
-          mkdir tercerCorteActividad
-          cd tercerCorteActividad
-          git clone https://github.com/SamuelDeCordoba/TercerCorteActividad.git .
-          docker-compose down
+          # Crear directorio si no existe
+          mkdir -p ~/tercerCorteActividad
+          cd ~/tercerCorteActividad
+          
+          # Clonar o actualizar repositorio
+          if [ -d .git ]; then
+            git pull origin main
+          else
+            git clone https://github.com/SamuelDeCordoba/TercerCorteActividad.git .
+          fi
+
+          # Limpiar containers previos y desplegar
+          docker-compose down || true  # Ignora errores si no hay containers
           docker-compose up -d --build
