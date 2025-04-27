@@ -23,6 +23,6 @@ jobs:
           rm -rf tercerCorteActividad
           mkdir tercerCorteActividad
           cd tercerCorteActividad
-          git clone https://github.com/tu-usuario/tu-repo.git .
+          git clone https://github.com/SamuelDeCordoba/TercerCorteActividad.git .
           docker-compose down
           docker-compose up -d --build
